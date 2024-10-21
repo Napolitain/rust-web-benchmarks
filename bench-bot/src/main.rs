@@ -82,11 +82,23 @@ fn main() {
     for member in &members {
         log::info!("Building {:?}", member);
 
-        let output = Command::new("cargo")
-            .args(["build", "--release"])
-            .current_dir(args.workspace_dir.join(member))
-            .output()
-            .unwrap();
+        // go build -o my_go_app
+        let member_str = member.to_string_lossy();
+        let output = if member_str.starts_with("go_") {
+            // If the member starts with "go_", use "go build"
+            Command::new("go")
+                .args(&["build", "-o main"])
+                .current_dir(args.workspace_dir.join(&member))
+                .output()
+                .expect("Failed to execute Go build")
+        } else {
+            // Default case: use "cargo build --release"
+            Command::new("cargo")
+                .args(&["build", "--release"])
+                .current_dir(args.workspace_dir.join(&member))
+                .output()
+                .expect("Failed to execute Cargo build")
+        };
 
         if !output.status.success() {
             log::error!(
@@ -155,11 +167,23 @@ fn main() {
 
             log::info!("Benchmarking {:?}", member);
 
-            let mut server = Command::new("cargo")
-                .args(["run", "--release", "-q"])
-                .current_dir(args.workspace_dir.join(member))
-                .spawn()
-                .unwrap();
+            let member_str = member.to_string_lossy();
+
+            let mut server = if member_str.starts_with("go_") {
+                // If the member starts with "go_", use "go run"
+                Command::new("go")
+                    .args(&["run", "."])  // `.` indicates the current directory for Go run
+                    .current_dir(args.workspace_dir.join(&member))
+                    .spawn()
+                    .expect("Failed to execute Go run")
+            } else {
+                // Default case: use "cargo run --release -q"
+                Command::new("cargo")
+                    .args(&["run", "--release", "-q"])
+                    .current_dir(args.workspace_dir.join(&member))
+                    .spawn()
+                    .expect("Failed to execute Cargo run")
+            };
 
             thread::sleep(Duration::from_secs(1));
 
