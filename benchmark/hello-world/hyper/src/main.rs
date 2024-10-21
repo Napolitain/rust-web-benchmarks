@@ -14,24 +14,6 @@ async fn hello(_: Request<impl hyper::body::Body>) -> Result<Response<Full<Bytes
     Ok(Response::new(Full::new(Bytes::from("Hello, World!"))))
 }
 
-#[derive(Clone)]
-// An Executor that uses the tokio runtime.
-pub struct TokioExecutor;
-
-// Implement the `hyper::rt::Executor` trait for `TokioExecutor` so that it can be used to spawn
-// tasks in the hyper runtime.
-// An Executor allows us to manage execution of tasks which can help us improve the efficiency and
-// scalability of the server.
-impl<F> hyper::rt::Executor<F> for TokioExecutor
-where
-    F: std::future::Future + Send + 'static,
-    F::Output: Send + 'static,
-{
-    fn execute(&self, fut: F) {
-        tokio::task::spawn(fut);
-    }
-}
-
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     // This address is localhost
@@ -46,7 +28,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         //
         // Note, this is a .await point, this loop will loop forever but is not a busy loop. The
         // .await point allows the Tokio runtime to pull the task off of the thread until the task
-        // has work to do. In this case, a connection arrives on the port we are listening on and
+        // has work to do. In this case, a connection arrives at the port we are listening on and
         // the task is woken up, at which point the task is then put back on a thread, and is
         // driven forward by the runtime, eventually yielding a TCP stream.
         let (tcp, _) = listener.accept().await?;
