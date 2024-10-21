@@ -1,6 +1,6 @@
 use actix_web::{web, App, HttpServer};
 
-#[actix_web::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| App::new().service(web::resource("/").to(index)))
         .bind("127.0.0.1:3000")?

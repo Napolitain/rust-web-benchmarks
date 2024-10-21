@@ -1,6 +1,6 @@
 use axum::{routing::get, Router};
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     let app = Router::new().route("/", get(|| async { "Hello, World!" }));
 
