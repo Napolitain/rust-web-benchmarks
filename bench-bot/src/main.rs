@@ -101,7 +101,7 @@ fn main() {
     let sys = System::new_all();
 
     let cpu_name = sys.global_cpu_info().brand();
-    let cpu_count = sys.cpus().len().to_string();
+    let cpu_count = (sys.cpus().len() - 1).to_string();
     let conn_count = args.connections.to_string();
     let duration = format!("{}s", args.duration);
     let cd = args.cd;
