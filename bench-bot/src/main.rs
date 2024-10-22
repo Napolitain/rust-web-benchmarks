@@ -84,7 +84,7 @@ fn main() {
 
         // go build -o my_go_app
         let member_str = member.to_string_lossy();
-        println!("{}", member_str.starts_with("go_"));
+        println!("{}", member_str);
         let output = if member_str.starts_with("go_") {
             // If the member starts with "go_", use "go build"
             Command::new("go")
