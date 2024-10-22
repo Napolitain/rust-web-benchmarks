@@ -169,6 +169,7 @@ fn main() {
 
             let member_str = member.to_string_lossy();
 
+            println!("{:?}", args.workspace_dir.join(&member));
             let mut server = if member_str.starts_with("go_") {
                 // If the member starts with "go_", use "go run"
                 Command::new("go")
