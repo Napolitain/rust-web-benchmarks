@@ -86,9 +86,12 @@ fn main() {
         let member_lossy = member.to_string_lossy(); // Bind the result to a variable
         let member_split = member_lossy.split("/");  // Now split can borrow safely
         let member_str = member_split.last().unwrap(); // Use the result safely
-        println!("{}", member_str);
         let output = if member_str.starts_with("go_") {
-            // If the member starts with "go_", use "go build"
+            Command::new("go")
+                .args(&["mod", "tidy"])
+                .current_dir(args.workspace_dir.join(&member))
+                .output()
+                .expect("Failed to execute Go build");
             Command::new("go")
                 .args(&["build"])
                 .current_dir(args.workspace_dir.join(&member))
@@ -172,7 +175,6 @@ fn main() {
 
             let member_str = member.to_string_lossy();
 
-            println!("{:?}", args.workspace_dir.join(&member));
             let mut server = if member_str.starts_with("go_") {
                 // If the member starts with "go_", use "go run"
                 Command::new("go")
