@@ -173,7 +173,9 @@ fn main() {
 
             log::info!("Benchmarking {:?}", member);
 
-            let member_str = member.to_string_lossy();
+            let member_lossy = member.to_string_lossy(); // Bind the result to a variable
+            let member_split = member_lossy.split("/");  // Now split can borrow safely
+            let member_str = member_split.last().unwrap(); // Use the result safely
 
             let mut server = if member_str.starts_with("go_") {
                 // If the member starts with "go_", use "go run"
