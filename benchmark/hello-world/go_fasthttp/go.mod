@@ -1,6 +1,6 @@
 module benchfasthttp
 
-go 1.23.1
+go 1.23
 
 require github.com/valyala/fasthttp v1.56.0
 
