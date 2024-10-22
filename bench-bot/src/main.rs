@@ -83,8 +83,9 @@ fn main() {
         log::info!("Building {:?}", member);
 
         // go build -o my_go_app
-        let member_split = member.to_string_lossy().split("/");
-        let member_str = member_split.last().unwrap();
+        let member_lossy = member.to_string_lossy(); // Bind the result to a variable
+        let member_split = member_lossy.split("/");  // Now split can borrow safely
+        let member_str = member_split.last().unwrap(); // Use the result safely
         println!("{}", member_str);
         let output = if member_str.starts_with("go_") {
             // If the member starts with "go_", use "go build"
