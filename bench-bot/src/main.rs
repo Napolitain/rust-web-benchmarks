@@ -87,7 +87,7 @@ fn main() {
         let output = if member_str.starts_with("go_") {
             // If the member starts with "go_", use "go build"
             Command::new("go")
-                .args(&["build", "-o main"])
+                .args(&["build"])
                 .current_dir(args.workspace_dir.join(&member))
                 .output()
                 .expect("Failed to execute Go build")
